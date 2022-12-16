@@ -638,9 +638,173 @@ if(file_exists($file)) {
 
 <!-- =========================================================== -->
 
+<!-- 15_file_upload -->
+
+<?php
+
+// really nasty nested if statements
+
+if(isset($_POST['submit'])) {
+
+
+    $allowed_ext = array('png', 'jpeg', 'jpg', 'gif');
+
+    if(!empty($_FILES['upload']['name'])) {
+        $file_name = $_FILES['upload']['name'];
+        $file_size = $_FILES['upload']['size'];
+        $file_tmp = $_FILES['upload']['tmp_name'];
+        $target_dir = "uploads/{$file_name}";
+
+        // get file extension 
+
+        $file_ext = explode('.', $file_name);
+        $file_ext = strtolower(end($file_ext));
+        echo $file_ext;
+
+        // validate the file type
+        if ( in_array($file_ext,$allowed_ext)) {
+
+            // check if file is less than 5mb
+            if ($file_size <= 5000000) {
+                move_uploaded_file($file_tmp, $target_dir);
+
+                $message = '<p style="color: green";>File Uploaded</p>';
+            }else {
+                $message = '<p style="color: orange";>File Too big</p>';
+
+            }
+
+        }else {
+
+            $message = '<p style="color: blue";>Choose a proper file bro</p>';
+
+        }
+    }else {
+        $message = '<p style="color: red";>Choose a file bro</p>';
+    }
+}
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=, initial-scale=1.0" />
+    <title>File Upload</title>
+  </head>
+  <body>
+    <?php echo  $message ?? null; ?>
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data">
+    Select File to upload (Image)
+    <input type="file" name="upload" id="">
+    <input type="submit" value="Submit" name="submit">
+
+</form>
+
+
+  </body>
+</html>
+
+
+<!-- END file_upload -->
 
 <!-- =========================================================== -->
+
+<!-- 16_exceptions -->
+
+<?php
+
+// throwing
+
+function validate($num) {
+    if (!$num) {
+        throw new Exception("Num Has to be Bigger Than Zero!!");
+    }
+    return $num;
+}
+
+// try catch blocks
+
+try {
+    echo validate(0);
+} catch (Exception $e) {
+    echo "Found an Exceptrion!!! ", $e->getMessage(), " ";
+} finally {
+    echo "First Finally";
+}
+
+?>
+
+<!-- END exceptions -->
+
 <!-- =========================================================== -->
+
+<!-- 17_OOP -->
+
+<?php
+
+// OOP in PHP blah blah blah
+
+class dog {
+    // Public = access from anywhere
+    // Private = Accessed from inside the class
+    // protected = Accessed from inside the class and by inheriting 
+
+    // properties of the class
+    public $name;
+    public $breed;
+
+    // Constructor
+    public function __construct($name, $breed){
+        $this->name = $name;
+        $this->breed = $breed;
+    }
+
+    // Class methods you already know this
+
+    function set_name($name) {
+        // aka. self.name = name(from param) 
+        $this->name = $name;
+    }
+
+    function get_name() {
+        return $this->name;
+    }
+}
+
+
+// create instance of dog
+
+$steven = new dog("Steven", "Pug");
+
+var_dump($steven);
+
+
+// Inheritance
+class shibaInu extends dog {
+
+    public $color;
+    public function __construct($name, $breed, $color){
+        parent::__construct($name, $breed);
+        $this->color = $color;
+    }
+
+    public function get_color() {
+        return $this->color;
+    }
+}
+
+$bobby = new shibaInu("bobby", "Shiba", "brown");
+
+echo $bobby->get_color();
+
+?>
+
+<!-- END OOP -->
+
 <!-- =========================================================== -->
 
 
