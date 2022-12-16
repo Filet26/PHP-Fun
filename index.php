@@ -461,8 +461,6 @@ printf('1 + 1 = %f', 1 + 1); // float
 
 <?php
 
-// pass data through url and forms using the $_GET and $_POST superglobals
-
 echo $_GET['name'];
 echo $_GET['age'];
 ?>
@@ -487,13 +485,160 @@ echo $_GET['age'];
 <!-- =========================================================== -->
 
 <!-- 11_input_sanitation -->
+<?php
+
+// Input sanitation
+
+// htmlspecialchars(), filter_input(), filter_var(), lots of ways to sanitize inputs
+
+$name = htmlspecialchars($_GET['name']);
+$age = htmlspecialchars($_GET['age']);
+
+echo $name."<br>";
+echo $age;
+?>
+
+<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+<div>
+    <label for="name">name: </label>
+    <input type="text" name="name">
+</div>
+<div>
+    <label for="age">age: </label>
+    <input type="text" name="age">
+</div>
+<input type="submit" value="Submit" name="submit">
+
+</form>
 
 <!-- END input_sanitation -->
 
 <!-- =========================================================== -->
+
+<!-- 12_cookies -->
+
+<?php
+
+// Cookies, you already know, stored on the browser side, remember users
+
+// Set cookies, key, value, expires(1 day)
+setcookie('name', 'Bobby', time() + 86400);
+
+
+if(isset($_COOKIE['name'])) {
+    echo $_COOKIE["name"];
+}
+
+setcookie('name', '', time() - 86400)
+
+?>
+
+<!-- END cookies -->
+
+
 <!-- =========================================================== -->
+
+<!-- 13_sessions -->
+
+<?php
+// like cookies, but stored on the server, contains sensitive information
+
+session_start();
+
+
+$username = htmlspecialchars($_POST['username']);
+$password = $_POST['password'];
+
+if($username == 'bobby' && $password == 'password') {
+    $_SESSION['username'] = $username;
+    header("Location: /php-tutorial/extras/dashboard.php");
+}else {
+    echo "Wrong Password Buddy!";
+}
+?>
+
+<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+<div>
+    <label for="username">Username: </label>
+    <input type="text" name="username">
+</div>
+<div>
+    <label for="password">Password: </label>
+    <input type="password" name="password">
+</div>
+<input type="submit" value="Submit" name="submit">
+
+<a href="extras/dashboard.php">To Dashboard!</a>
+
+</form>
+
+
+<!-- dashboard -->
+
+<?php
+
+session_start();
+
+if(isset($_SESSION['username'])) {
+    echo '<h1> Hello ' . $_SESSION['username'].'</h1>';
+    echo '<a href="logout.php">Logout</a>';
+
+}else {
+    echo "<h1>Welcome Guest</h1>";
+    echo "<a href='/php-tutorial/13_sessions.php'>Back to Home</a>";
+}
+
+?>
+
+<!-- logout -->
+
+<?php
+
+session_start();
+
+session_destroy();
+
+header("Location: /php-tutorial/13_sessions.php")
+
+?>
+
+<!-- END sessions -->
+
 <!-- =========================================================== -->
+
+<!-- 14_file_IO-->
+
+<?php
+
+// FILE read and write, tom lane moment
+
+// set file
+$file = 'extras/fruits.txt';
+
+// check if file exists, and read
+
+if(file_exists($file)) {
+    echo readfile($file)."<br>";
+    // just like python fr
+    $file_pointer = fopen($file, 'r');
+    $contents = fread($file_pointer, filesize($file));
+    fclose($file_pointer);
+    echo $contents;
+}else {
+    // wrote to file if not exist
+    $file_pointer = fopen($file, "w");
+    $contents = "Apple" . PHP_EOL . "Peach" . PHP_EOL . "Strawberry";
+    fwrite($file_pointer, $contents);
+    fclose($file_pointer);
+}
+
+?>
+
+<!-- END File_IO -->
+
 <!-- =========================================================== -->
+
+
 <!-- =========================================================== -->
 <!-- =========================================================== -->
 <!-- =========================================================== -->
