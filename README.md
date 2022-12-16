@@ -1,1 +1,3 @@
-## PHP Stuff, From Youtube
+## PHP Stuff
+
+Crash course, for reference later. 
